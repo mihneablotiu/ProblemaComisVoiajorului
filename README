@@ -1,0 +1,37 @@
+Problema Comis-Voiajorului - Tema 1 & 2
+Blotiu Mihnea-Andrei - 343C1
+
+Structură:
+    |--- Makefile -> regulile de compilare ale tuturor executabilelor
+                  -> pentru compilare (make build)
+                  -> pentru stergerea executabilelor (make clean)
+                  -> pentru rularea unui test în varianta serială (make run_test_serial TEST=testX)
+		  cu X intre 1 si 15 insa testele 14-15 dureaza foarte mult in varianta seriala
+                  -> pentru rularea unui test în varianta openMP (make run_test_openMP THREADS=Y TEST=testX)
+ 		  cu X intre 1 si 15, si Y = numarul de thread-uri dorite pentru rularea paralela
+                  -> pentru rularea unui test in varianta pthreads (make run_test_pthreads THREADS=Y TEST=testX)
+		  cu aceeasi insemnatate ca mai sus
+                  -> pentru rularea unui test in varianta MPI (make run_test_mpi NP=Y TEST=testX)
+		  cu x intre 1 si 15 si Y = numarul de procese dorite la rularea MPI
+                  -> pentru rularea unui test in varianta MPI-OpenMP (make run_test_mpi_openMP NP=Z THREADS=Y TEST=testX)
+		  cu x intre 1 si 15 si Z = numarul de procese dorite si Y = numarul de thread-uri per proces
+                  -> pentru rularea unui test in varianta MPI-Pthreads (make run_test_mpi_pthreads NP=Z THREADS=Y TEST=testX) cu aceeasi
+                  insemnatate ca mai sus
+                  -> toate comenzile vor avea output-ul la consola
+    |--- README
+    |--- run.sh -> script care ruleaza automat testele 1-13 de 20 de ori
+    		    pentru fiecare varianta paralela/distribuita si de 10 ori pentru varianta
+    		    seriala si scrie output-ul alaturi de timpul de executie mediu in /tests
+    |--- mpi -> implementarea in varianta MPI simpla
+    |--- mpi_openMP -> implementarea in varianta MPI-OpenMP hibrid
+    |--- mpi_pthreads -> implementarea in varianta MPI-PThreads hibrid
+    |--- openMP -> implementarea in varianta openMP
+    |--- pthreads -> implementarea in varianta pthreads
+    |--- serial -> implementarea seriala de referinta
+    |--- tests -> /in -> folder-ul cu testele de input in format: pe prima
+                      linie numarul de orase si apoi matricea de costuri
+               -> /out_X -> folder-ul de output in care scrie script-ul
+               		  run.sh. Acesta are momentan rol doar pentru verificarea
+               		  corectitudinii implementarilor prin comparatie cu output-ul
+               		  variantei seriale, insa in tema 3 va fi folosit pentru
+               		  realizarea graficelor necesare.
