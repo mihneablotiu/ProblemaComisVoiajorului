@@ -7,7 +7,7 @@ for i in {1..15}; do
     last_path=""
     last_minimum_cost=""
 
-    for j in {1..10}; do
+#    for j in {1..10}; do
         output=$(./serial_implementation < tests/in/test${i}.in)
         
         elapsed_time=$(echo "$output" | awk '/Total time:/ { print $3 }')
@@ -15,9 +15,9 @@ for i in {1..15}; do
         last_minimum_cost=$(echo "$output" | awk '/Minimum cost:/ { print $3 }')
 
         total_time=$(echo "$total_time + $elapsed_time" | bc)
-    done
+#    done
     
-    mean_total_time=$(echo "scale=6; $total_time / 10" | bc)
+    mean_total_time=$(echo "scale=6; $total_time" | bc)
     
     if [[ "$mean_total_time" == .* ]]; then
         mean_total_time="0$mean_total_time"
