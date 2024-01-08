@@ -2,7 +2,7 @@
 
 make build
 
-# THREADS=4
+THREADS=2
 
 # for i in {1..14}; do
 #    total_time=0.0
@@ -52,9 +52,9 @@ for i in {1..14}; do
         mean_total_time="0$mean_total_time"
     fi
 
-    echo "Path: ${last_path}" > tests/out_openMP/test${i}.out.${THREADS}
-    echo "Minimum cost: ${last_minimum_cost}" >> tests/out_openMP/test${i}.out.${THREADS}
-    echo "Mean total time: ${mean_total_time} seconds" >> tests/out_openMP/test${i}.out.${THREADS}
+    echo "Path: ${last_path}" > tests/out_openMP/test${i}.out.${THREADS}.average
+    echo "Minimum cost: ${last_minimum_cost}" >> tests/out_openMP/test${i}.out.${THREADS}.average
+    echo "Mean total time: ${mean_total_time} seconds" >> tests/out_openMP/test${i}.out.${THREADS}.average
     echo "Test ${i} done - openMP"
 done
 
