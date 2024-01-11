@@ -2,8 +2,8 @@
 
 make build
 
-THREADS=2
-PROCS=4
+THREADS=14
+PROCS=2
 
 # for i in {1..14}; do
 #    total_time=0.0
@@ -59,32 +59,32 @@ PROCS=4
 #     echo "Test ${i} done - openMP"
 # done
 
-for i in {1..14}; do
-    total_time=0.0
-    last_path=""
-    last_minimum_cost=""
+# for i in {1..14}; do
+#     total_time=0.0
+#     last_path=""
+#     last_minimum_cost=""
 
-    for j in {1..3}; do
-        output=$(./pthread_implementation ${THREADS} < tests/in/test${i}.in)
+#     for j in {1..3}; do
+#         output=$(./pthread_implementation ${THREADS} < tests/in/test${i}.in)
         
-        elapsed_time=$(echo "$output" | awk '/Total time:/ { print $3 }')
-        last_path=$(echo "$output" | awk '/Path:/ { $1=""; print $0 }')
-        last_minimum_cost=$(echo "$output" | awk '/Minimum cost:/ { print $3 }')
+#         elapsed_time=$(echo "$output" | awk '/Total time:/ { print $3 }')
+#         last_path=$(echo "$output" | awk '/Path:/ { $1=""; print $0 }')
+#         last_minimum_cost=$(echo "$output" | awk '/Minimum cost:/ { print $3 }')
 
-        total_time=$(echo "$total_time + $elapsed_time" | bc)
-    done
+#         total_time=$(echo "$total_time + $elapsed_time" | bc)
+#     done
     
-    mean_total_time=$(echo "scale=6; $total_time / 3" | bc)
+#     mean_total_time=$(echo "scale=6; $total_time / 3" | bc)
     
-    if [[ "$mean_total_time" == .* ]]; then
-        mean_total_time="0$mean_total_time"
-    fi
+#     if [[ "$mean_total_time" == .* ]]; then
+#         mean_total_time="0$mean_total_time"
+#     fi
     
-    echo "Path: ${last_path}" > tests/out_pthreads/test${i}.out.${THREADS}.average
-    echo "Minimum cost: ${last_minimum_cost}" >> tests/out_pthreads/test${i}.out.${THREADS}.average
-    echo "Mean total time: ${mean_total_time} seconds" >> tests/out_pthreads/test${i}.out.${THREADS}.average
-    echo "Test ${i} done - pthreads"
-done
+#     echo "Path: ${last_path}" > tests/out_pthreads/test${i}.out.${THREADS}.average
+#     echo "Minimum cost: ${last_minimum_cost}" >> tests/out_pthreads/test${i}.out.${THREADS}.average
+#     echo "Mean total time: ${mean_total_time} seconds" >> tests/out_pthreads/test${i}.out.${THREADS}.average
+#     echo "Test ${i} done - pthreads"
+# done
 
 # for i in {1..14}; do
 #     total_time=0.0
@@ -166,5 +166,67 @@ done
 #     echo "Mean total time: ${mean_total_time} seconds" >> tests/out_mpi_pthreads/test${i}.out
 #     echo "Test ${i} done - MPI_PTHREADS"
 # done
+
+for x in {2..5}; do
+    for y in 2 4 8 12 14 16 20 24; do
+        for i in {1..14}; do
+            total_time=0.0
+            last_path=""
+            last_minimum_cost=""
+
+            for j in {1..3}; do
+                output=$(mpirun -np ${x} --oversubscribe mpi_openmp_implementation ${y} < tests/in/test${i}.in)
+                
+                elapsed_time=$(echo "$output" | awk '/Total time:/ { print $3 }')
+                last_path=$(echo "$output" | awk '/Path:/ { $1=""; print $0 }')
+                last_minimum_cost=$(echo "$output" | awk '/Minimum cost:/ { print $3 }')
+
+                total_time=$(echo "$total_time + $elapsed_time" | bc)
+            done
+            
+            mean_total_time=$(echo "scale=6; $total_time / 3" | bc)
+            
+            if [[ "$mean_total_time" == .* ]]; then
+                mean_total_time="0$mean_total_time"
+            fi
+            
+            echo "Path: ${last_path}" > tests/out_mpi_openMP/test${i}.out.${x}procs.${y}threads.average
+            echo "Minimum cost: ${last_minimum_cost}" >> tests/out_mpi_openMP/test${i}.out.${x}procs.${y}threads.average
+            echo "Mean total time: ${mean_total_time} seconds" >> tests/out_mpi_openMP/test${i}.out.${x}procs.${y}threads.average
+            echo "Test ${i} done - MPI_OPENMP"
+        done
+    done
+done
+
+for x in {2..5}; do
+    for y in 2 4 8 12 14 16 20 24; do
+        for i in {1..14}; do
+            total_time=0.0
+            last_path=""
+            last_minimum_cost=""
+
+            for j in {1..3}; do
+                output=$(mpirun -np ${x} --oversubscribe mpi_pthreads_implementation ${y} < tests/in/test${i}.in)
+                
+                elapsed_time=$(echo "$output" | awk '/Total time:/ { print $3 }')
+                last_path=$(echo "$output" | awk '/Path:/ { $1=""; print $0 }')
+                last_minimum_cost=$(echo "$output" | awk '/Minimum cost:/ { print $3 }')
+
+                total_time=$(echo "$total_time + $elapsed_time" | bc)
+            done
+            
+            mean_total_time=$(echo "scale=6; $total_time / 3" | bc)
+            
+            if [[ "$mean_total_time" == .* ]]; then
+                mean_total_time="0$mean_total_time"
+            fi
+            
+            echo "Path: ${last_path}" > tests/out_mpi_pthreads/test${i}.out.${x}procs.${y}threads.average
+            echo "Minimum cost: ${last_minimum_cost}" >> tests/out_mpi_pthreads/test${i}.out.${x}procs.${y}threads.average
+            echo "Mean total time: ${mean_total_time} seconds" >> tests/out_mpi_pthreads/test${i}.out.${x}procs.${y}threads.average
+            echo "Test ${i} done - MPI_PTHREADS"
+        done
+    done
+done
 
 make clean
